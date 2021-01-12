@@ -1,0 +1,47 @@
+# Maven tempfiles
+target
+pom.xml.releaseBackup
+release.properties
+# Vim swap
+[._]*.s[a-v][a-z]
+[._]*.sw[a-p]
+[._]s[a-v][a-z]
+[._]sw[a-p]
+# Vim session
+Session.vim
+# temporary
+.netrwhist
+*~
+# auto-generated tag files
+tags
+# Eclipse project files
+.project
+
+# JetBrains IDE project directory (IntelliJ IDEA, PyCharm, etc...)
+.idea
+
+# XLD login information, don't want this accidentally committed...
+deployit.conf
+deployit.rest
+
+# Python compiled modules
+*.pyc
+__pycache__
+
+# Jython compiled modules
+*$py.class
+
+# wheel files
+build
+dist
+*.egg-info
+.eggs
+
+# Python Venv
+venv
+
+# Tox files:
+.tox/
+
+# Test files:
+testresults/
