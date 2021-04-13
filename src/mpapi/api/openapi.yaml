@@ -1,0 +1,141 @@
+openapi: "3.0.0"
+info:
+  version: 1.0.0
+  title: MultiPurpose API
+  license:
+    name: GPLv3
+servers:
+  - url: /api
+paths:
+  /telegrams:
+    get:
+      summary: List all telegrams
+      tags:
+        - Smartmeter
+      responses:
+        '200':
+          description: An array of telegrams
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Telegrams"
+  /telegrams/{telegram_id}:
+    get:
+      summary: Get one telegram by Id
+      tags:
+        - Smartmeter
+      parameters:
+        - name: telegram_id
+          in: path
+          required: true
+          schema:
+            $ref: "#/components/schemas/TelegramId"
+      responses:
+        '200':
+          description: One telegram
+          content:
+            application/json:
+              schema:
+                $ref: "#/components/schemas/Telegram"
+        '404':
+          description: Telegram
+components:
+  securitySchemes:
+    ApiKeyAuth:
+      type: apiKey
+      in: header
+      name: X-API-KEY
+
+  schemas:
+    Telegram:
+      type: object
+      required:
+        - header
+        - data
+        - updatedatetime
+        - datetime
+      additionalProperties: true
+      properties:
+        header:
+          type: string
+          description: "The smartmeter header"
+        data:
+          type: object
+          $ref: "#/components/schemas/TelegramData"
+        updatedatetime:
+          description: "The date/time in seconds (with fractions) sinds Unix epoch"
+          type: number
+          format: float
+        datetime:
+          description: "The date/time in string format (ISO 8601), local timezone"
+          type: string
+          format: date-time
+    TelegramId:
+      description: "The unique identifier of the telegram"
+      type: integer
+      format: int64
+      readOnly: true
+    TelegramData:
+      type: object
+      description: "Telegram data fields"
+      $ref: "#/components/schemas/OBISCodes"
+    Telegrams:
+      type: array
+      items:
+        allOf:
+          - $ref: "#/components/schemas/TelegramId"
+          - $ref: "#/components/schemas/Telegram"
+    OBISCodes:
+      description: "OBIS fields"
+      type: object
+      properties:
+        0-0:96.1.1:
+          description: "Serial number"
+          type: string
+          pattern: "[A-Z0-9]+"
+        1-0:1.8.1:
+          description: "Meter Reading electricity delivered to client (Tariff 1) in 0,001 kWh"
+          type: number
+          format: float
+        1-0:1.8.2:
+          description: "Meter Reading electricity delivered to client (Tariff 2) in 0,001 kWh"
+          type: number
+          format: float
+        1-0:2.8.1:
+          description: "Meter Reading electricity delivered by client (Tariff 1) in 0,001 kWh"
+          type: number
+          format: float
+        1-0:2.8.2:
+          description: "Meter Reading electricity delivered by client (Tariff 2) in 0,001 kWh"
+          type: number
+          format: float
+        0-0:96.14.0:
+          description: "Tariff indicator"
+          type: integer
+          format: int32
+          minimum: 1
+          maximum: 2
+        1-0:1.7.0:
+          description: "Actual electricity power delivered(+P) in 1 Watt resolution"
+          # pattern: "[0-9]+\\.[0-9]{2}"
+          type: number
+        1-0:2.7.0:
+          description: "Actual electricity power received(-P) in 1 Watt resolution"
+          pattern: "[0-9]+\\.[0-9]{2}"
+          type: number
+        0-0:17.0.0:
+          description: "Maximum power per phase in kW resolution"
+          pattern: "[0-9]+\\.[0-9]{2}"
+          type: number
+        0-0:96.3.10:
+          description: "Switch position (1 is on)"
+          pattern: "[0-1]"
+          type: integer
+        0-0:96.13.1:
+          description: "Message numeric"
+          pattern: "[0-9]*"
+          type: integer
+        0-0:96.13.0:
+          description: "Message string"
+          pattern: ".*"
+          type: string
